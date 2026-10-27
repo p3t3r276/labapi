@@ -12,4 +12,4 @@ ENV ASPNETCORE_HTTP_PORTS=8080
 WORKDIR /app
 COPY --from=build /app .
 EXPOSE 8080
-ENTRYPOINT ["dotnet", "LabApi.dll"]
+ENTRYPOINT ["dotnet", "/app/LabApi.dll"]

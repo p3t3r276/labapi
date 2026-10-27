@@ -1,14 +1,16 @@
 version: v1.1.0
+networks:
+  - name: smoke
+    driver: bridge
 steps:
   - id: build
     build: -t $Registry/api:$ID -t $Registry/api:latest --build-arg APP_VERSION=$ID -f Dockerfile .
   - id: smoke-test
-    cmd: $Registry/api:$ID
+    cmd: --network smoke --name api-smoke $Registry/api:$ID
     detach: true
-    ports: ["8080:8080"]
     when: ["build"]
   - id: check
-    cmd: mcr.microsoft.com/azure-cli curl -sf http://smoke-test:8080/healthz
+    cmd: --network smoke mcr.microsoft.com/azure-cli curl -sf --retry 10 --retry-delay 2 --retry-connrefused http://api-smoke:8080/healthz
     when: ["smoke-test"]
   - id: push
     push: ["$Registry/api:$ID", "$Registry/api:latest"]
