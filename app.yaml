@@ -1,0 +1,27 @@
+location: eastasia
+type: Microsoft.App/containerApps
+identity:
+  type: SystemAssigned
+properties:
+  configuration:
+    activeRevisionsMode: Multiple
+    ingress:
+      external: true
+      targetPort: 8080
+      transport: auto
+      allowInsecure: false
+    registries:
+      - server: acrlabai200.azurecr.io
+        identity: system
+    secrets:
+      - name: db-pass
+        keyVaultUrl: https://kv-labai200.vault.azure.net/secrets/DbPassword
+        identity: system
+  template:
+    revisionSuffix: v3
+    containers:
+      - name: api
+        image: acrlabai200.azurecr.io/api:1.0.3
+        env:
+          - { name: Api__Message, value: "v3" }
+          - { name: DB_PASS, secretRef: db-pass }
