@@ -17,3 +17,4 @@ app.MapGet("/env", (IConfiguration c) => new
 });
 app.MapHealthChecks("/healthz");
 app.Run();
+// trigger
